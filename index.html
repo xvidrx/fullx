@@ -47,37 +47,127 @@
   .card img:hover {
     opacity: 0.85;
   }
+  .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #111;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+}
+
+.card img {
+  width: 100%;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.card:hover img {
+  transform: scale(1.1);
+}
+
+/* затемнение */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover .overlay {
+  opacity: 1;
+}
+
+/* кнопка play */
+.play-btn {
+  width: 70px;
+  height: 70px;
+  background: rgba(255,0,0,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.card:hover .play-btn {
+  transform: scale(1.15);
+}
+
+/* бейдж */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff0033;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+/* просмотры */
+.views {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  color: #fff;
+  font-size: 12px;
+}
   </style>
 </head>
   <h1>🎬 Teen and More in HD Go on <a href="https://xvidrx.github.io/XVideos" target="_blank">🔥XVideOS🔥</a> without ADS!</h1>
 <body>
 <div class="gallery" id="gallery"></div>
 
+<div class="gallery" id="gallery"></div>
+
 <script>
-  const gallery = document.getElementById("gallery");
+const gallery = document.getElementById("gallery");
 
-  // создаём массив от 001 до 155
-  let images = [];
-  for (let i = 1; i <= 155; i++) {
-    images.push(String(i).padStart(3, '0'));
-  }
+let images = [];
+for (let i = 1; i <= 155; i++) {
+  images.push(String(i).padStart(3, '0'));
+}
 
-  // перемешивание (алгоритм Фишера-Йетса)
-  for (let i = images.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [images[i], images[j]] = [images[j], images[i]];
-  }
+// перемешивание
+images.sort(() => Math.random() - 0.5);
 
-  // выводим карточки
-  images.forEach(num => {
-    gallery.innerHTML += `
-      <div class="card">
-        <a href="https://xvidrx.github.io/fullx/Player.html" target="_blank">
-          <img src="${num}.jpg" alt="Thumbnail ${num}" loading="lazy">
-        </a>
-      </div>
-    `;
-  });
+images.forEach(num => {
+  let randomViews = Math.floor(Math.random() * 900) + 100;
+
+  gallery.innerHTML += `
+    <div class="card">
+      <a href="https://xvidrx.github.io/fullx/Player.html" target="_blank">
+        <span class="badge">HD</span>
+        <img src="${num}.jpg" loading="lazy">
+        <div class="overlay">
+          <div class="play-btn">▶</div>
+        </div>
+        <div class="views">${randomViews}K views</div>
+      </a>
+    </div>
+  `;
+});
 </script>
     <h1>🎬 Teen and More in HD Go on <a href="https://xvidrx.github.io/XVideos" target="_blank">🔥XVideOS🔥</a> without ADS!</h1>
 </body>
