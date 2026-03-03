@@ -56,17 +56,28 @@
 <script>
   const gallery = document.getElementById("gallery");
 
+  // создаём массив от 001 до 155
+  let images = [];
   for (let i = 1; i <= 155; i++) {
-    let num = String(i).padStart(3, '0');
+    images.push(String(i).padStart(3, '0'));
+  }
 
+  // перемешивание (алгоритм Фишера-Йетса)
+  for (let i = images.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [images[i], images[j]] = [images[j], images[i]];
+  }
+
+  // выводим карточки
+  images.forEach(num => {
     gallery.innerHTML += `
       <div class="card">
         <a href="https://xvidrx.github.io/fullx/Player.html" target="_blank">
-          <img src="${num}.jpg" alt="Thumbnail ${num}">
+          <img src="${num}.jpg" alt="Thumbnail ${num}" loading="lazy">
         </a>
       </div>
     `;
-  }
+  });
 </script>
     <h1>🎬 Teen and More in HD Go on <a href="https://xvidrx.github.io/XVideos" target="_blank">🔥XVideOS🔥</a> without ADS!</h1>
 </body>
