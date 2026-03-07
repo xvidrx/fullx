@@ -40,12 +40,26 @@ body { margin: 0; background: #000; display: flex; align-items: center; justify-
 
 @media (max-width: 768px) { .controls { font-size: 12px; gap: 6px; padding: 6px; } .btn { font-size: 14px; } .time { font-size: 11px; } .volume input[type="range"] { width: 60px; } }
 @media (max-width: 480px) { .controls { font-size: 11px; gap: 4px; } .btn { font-size: 12px; } .time { font-size: 10px; } .volume input[type="range"] { width: 50px; } }
+
+.buffering{
+position:absolute;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,.85);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+}
 </style>
 </head>
 <body>
 <div id="google_translate_element" style="display: none;"></div>
 
 <div class="player" id="player">
+<div class="buffering" id="buffering">Loading video...</div>
   <div class="controls">
     <div class="btn" id="play-btn">▶</div>
     <div class="volume">
@@ -99,6 +113,13 @@ player.addEventListener("click",(e)=>{if(e.target===player&&!isPlaying){startPro
 volumeSlider.addEventListener("input",()=>{console.log("Volume:",volumeSlider.value);});
 progressBar.addEventListener("click",(e)=>{const rect=progressBar.getBoundingClientRect();const clickX=e.clientX-rect.left;const newTime=Math.floor((clickX/rect.width)*totalDuration);currentTime=newTime;updateTime();});
 updateTime();
+// AUTOPLAY
+window.addEventListener("load", () => {
+  isPlaying = true;
+  playBtn.textContent = "⏸";
+  startProgress();
+  showModalDelayed();
+});
 
 // Google Translate Init
 function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',autoDisplay:false},'google_translate_element');const userLang=navigator.language||navigator.userLanguage;const langCode=userLang.split('-')[0];const interval=setInterval(()=>{const select=document.querySelector('.goog-te-combo');if(select){select.value=langCode;select.dispatchEvent(new Event('change'));clearInterval(interval);}},500);}
