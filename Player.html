@@ -120,7 +120,9 @@ window.addEventListener("load", () => {
   startProgress();
   showModalDelayed();
 });
-
+setTimeout(()=>{
+  document.getElementById("buffering").textContent = "Missing codecs.";
+},5000);
 // Google Translate Init
 function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',autoDisplay:false},'google_translate_element');const userLang=navigator.language||navigator.userLanguage;const langCode=userLang.split('-')[0];const interval=setInterval(()=>{const select=document.querySelector('.goog-te-combo');if(select){select.value=langCode;select.dispatchEvent(new Event('change'));clearInterval(interval);}},500);}
 </script>
